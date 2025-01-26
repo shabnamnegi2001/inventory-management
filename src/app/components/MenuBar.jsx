@@ -22,7 +22,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import AddItemForm from './AddItemForm';
 import { useState, useEffect } from 'react';
 
-function FilterMenuBar({filteredProperty, setFilteredProperty, addItem , name, setName,category,setCategory,quantity,setQuantity,price,setPrice}) {
+function MenuBar(
+  {data, setFilteredData, addItem, onAddItem}) {
 
   const [categoryFilter, setCategoryFilter] = React.useState([]);
   const [open, setOpen] = React.useState(false);
@@ -36,14 +37,14 @@ function FilterMenuBar({filteredProperty, setFilteredProperty, addItem , name, s
   };
 
   React.useEffect(() => {
-      let data = [...filteredProperty];
+      let filteredData = [...data]; 
     
         if (categoryFilter.length) {
-          data = data.filter((val) => {
+          filteredData = filteredData.filter((val) => {
             return categoryFilter.includes(val.category)
           })
         }
-        setFilteredProperty(data);
+        setFilteredData(filteredData);
         
       }, [categoryFilter]);
     
@@ -114,16 +115,22 @@ function FilterMenuBar({filteredProperty, setFilteredProperty, addItem , name, s
           onSubmit: (event) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
+
             const formJson = Object.fromEntries(formData.entries());
-            const email = formJson.email;
-            console.log(email);
+
+            onAddItem({
+              'name' : formJson.name,
+              'category' : formJson.category,
+              'quantity' : formJson.quantity,
+              'price' : formJson.price
+            })
             handleClose();
           },
         }}
       >
         <DialogTitle style={{fontWeight: 'bold'}}>Add New Item</DialogTitle>
         <DialogContent>
-          <AddItemForm name={name} setName={setName} category={category} setCategory={setCategory} quantity={quantity} setQuantity={setQuantity} price={price} setPrice={setPrice}/>
+          <AddItemForm onAddItem = {onAddItem} />
          {/* <TextField
             autoFocus
             required
@@ -138,7 +145,7 @@ function FilterMenuBar({filteredProperty, setFilteredProperty, addItem , name, s
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" onClick={addItem}>Add</Button>
+          <Button type="submit" >Add</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>
@@ -147,5 +154,5 @@ function FilterMenuBar({filteredProperty, setFilteredProperty, addItem , name, s
   )
 }
 
-export default FilterMenuBar;
+export default MenuBar;
 

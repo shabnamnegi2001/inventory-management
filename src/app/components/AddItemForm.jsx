@@ -1,49 +1,64 @@
-import { Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import items from '../items';
+import { TextField, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import items, { itemCategory } from "../items";
+import { FormControl } from "@mui/material";
+import { InputLabel } from "@mui/material";
+import { Input } from "@mui/material";
+import { FormHelperText } from "@mui/material";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import {MenuItem} from "@mui/material";
 
-const AddItemForm = ({name, category, quantity, price, setName, setCategory, setPrice, setQuantity}) => {
+import {Stack} from "@mui/material";
+
+ 
+const AddItemForm = ({ onAddItem }) => {
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   quantity: 0,
+  //   category: "",
+  //   price: 0,
+  // });
 
   return (
-    <div className='flex flex-col w-full gap-3'>
-    <div>
-        <p className='font-bold'>Item Name</p>
-        <input className='border-[1px] border-slate-150 p-1'
-        value={name} onChange={(e) => setName(e.target.value)}
-        type='text' name='name' placeholder='Enter item name'/>
-    </div>
+    <>
+      <TextField
+        name="name"
+        // value={formData?.name}
+        label="Name"
+        variant="outlined"
+      />
+      <TextField
+        select
+        label="Category"
+        helperText="Please select the item category"
+        variant="outlined"
+        name='category'
+        // value = {formData?.category}
+      >
+        {itemCategory?.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </TextField>
 
-    <div>
-    <p className='font-bold'>select category:</p>
-    {["Electronics", "Furniture", "Stationery" ].map((val, index) => {
-      return (
-        <div key={`key is ${index}`}>
-        <input className='border-[1px] border-slate-150 '
-        type="radio" id={`category-${index}`} name='category'
-        value={val} onChange={(e) => setCategory(e.target.value)} 
-        />
-         <label htmlFor={`category-${index}`}>{val}</label>
-         </div>
-      )
-    })}
-    </div>
-   
-    <div>
-        <p className='font-bold'>Quantity</p>
-        <input className='border-[1px] border-slate-150 p-1'
-        type='number' name='quantity' placeholder='Enter quantity'
-        value={quantity} onChange={(e) => setQuantity(e.target.value)} 
-        />
-    </div>
-    <div>
-        <p className='font-bold'>Price</p>
-        <input className='border-[1px] border-slate-150 p-1'
-        type='number' name='price' placeholder='Enter price'
-        value={price} onChange={(e) => setPrice(e.target.value)} 
-        />
-    </div>
-    </div>
-  )
-}
+      <TextField
+        name="quantity"
+        // value={formData?.quantity}
+        label="Quantity"
+        variant="outlined"
+      />
+
+      <TextField
+        name="price"
+        // value={formData?.price}
+        label="Price"
+        variant="outlined"
+      />
+    </>
+    
+  );
+};
 
 export default AddItemForm;
