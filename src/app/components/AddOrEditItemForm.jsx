@@ -12,20 +12,29 @@ import {MenuItem} from "@mui/material";
 import {Stack} from "@mui/material";
 
  
-const AddItemForm = ({ onAddItem }) => {
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   quantity: 0,
-  //   category: "",
-  //   price: 0,
-  // });
+const AddOrEditItemForm = ({ onAddOrEditItem, itemData}) => {
+  const [formData, setFormData] = useState( itemData?.current || {
+    name: "",
+    quantity: 0,
+    category: "",
+    price: 0,
+  });
+
+  const handleChange = (event) => {
+    setFormData((prev) => {
+      prev[event.target.name] = event.target.value
+      return {...prev}
+    })
+  }
 
   return (
     <>
       <TextField
         name="name"
-        // value={formData?.name}
+        defaultValue={itemData?.current?.name}
+        value={formData?.name}
         label="Name"
+        onChange={handleChange}
         variant="outlined"
       />
       <TextField
@@ -34,7 +43,10 @@ const AddItemForm = ({ onAddItem }) => {
         helperText="Please select the item category"
         variant="outlined"
         name='category'
-        // value = {formData?.category}
+        defaultValue={itemData?.current?.category}
+        value = {formData?.category}
+        onChange={handleChange}
+
       >
         {itemCategory?.map((option) => (
           <MenuItem key={option} value={option}>
@@ -45,14 +57,18 @@ const AddItemForm = ({ onAddItem }) => {
 
       <TextField
         name="quantity"
-        // value={formData?.quantity}
+        defaultValue={itemData?.current?.quantity}
+        value={formData?.quantity}
         label="Quantity"
+        onChange={handleChange}
         variant="outlined"
       />
 
       <TextField
         name="price"
-        // value={formData?.price}
+        defaultValue={itemData?.current?.price}
+        value={formData?.price}
+        onChange={handleChange}
         label="Price"
         variant="outlined"
       />
@@ -61,4 +77,4 @@ const AddItemForm = ({ onAddItem }) => {
   );
 };
 
-export default AddItemForm;
+export default AddOrEditItemForm;

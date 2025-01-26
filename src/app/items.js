@@ -23,14 +23,14 @@ const items = [
     {
       "id": 4,
       "name": "Notebook",
-      "category": "Stationery",
+      "category": "Stationary",
       "quantity": 50,
       "price": 2
     },
     {
       "id": 5,
       "name": "Pen",
-      "category": "Stationery",
+      "category": "Stationary",
       "quantity": 100,
       "price": 1
     },
@@ -51,7 +51,7 @@ const items = [
     {
       "id": 8,
       "name": "Marker",
-      "category": "Stationery",
+      "category": "Stationary",
       "quantity": 25,
       "price": 3
     },
