@@ -28,6 +28,7 @@ import ListItemText from '@mui/material/ListItemText';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { itemCategory } from '../items';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import {   useColorScheme, useTheme } from '@mui/material/styles';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -177,7 +178,9 @@ EnhancedTableHead.propTypes = {
 export default function ItemListContainer(
   { filteredData, deleteItem, onAddOrEditItem, items, setFilteredData }
 ) {
-
+  const { mode, setMode } = useColorScheme();
+  const theme  = useTheme()
+  
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('quantity');
   const [selected, setSelected] = React.useState([]);
@@ -266,6 +269,7 @@ export default function ItemListContainer(
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [order, orderBy, page, rowsPerPage, filteredData],
   );
+  console.log(mode)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -290,13 +294,16 @@ export default function ItemListContainer(
                 <TableRow
                   key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  className= { item.quantity < 10 ? 'bg-yellow-100 hover:bg-yellow-300' : 'hover:bg-gray-100'}
+                  className= { 
+                    item.quantity < 10 
+                    ? `${ theme.palette.mode === 'dark' ? 'bg-red-500/5 hover:bg-red-600/20' : 'hover:bg-red-300 bg-red-200 '} `
+                    : `${ theme.palette.mode === 'dark' ? 'hover:bg-gray-100/10' : 'hover:bg-gray-100'}`}
                 >
                   <TableCell  align	='center' component="th" scope="row">
                     {item.name}
                   </TableCell>
                   <TableCell align="center">{item.category}</TableCell>
-                  <TableCell align="center">{item.quantity}</TableCell>
+                  <TableCell align="center" className={  item.quantity < 10 && '!text-red-600'} >{item.quantity}</TableCell>
                   <TableCell align="center">{item.price}$</TableCell>
                   <TableCell align="center">
                     <button

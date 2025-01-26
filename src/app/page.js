@@ -9,11 +9,32 @@ import MenuBar from './components/MenuBar';
 import ItemListContainer from './components/ItemListContainer';
 import { useState } from 'react';
 import items from './items';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 
 export default function Home() {
 
+  const [mode, setMode] = useState(window?.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  
+  const darkTheme =  createTheme({
+      palette: {
+        mode: mode,
+      },
+    }
+  );
 
+  React.useEffect(()=>{
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      setMode(event.matches ? "dark" : "light")
+  });
+  return () => {
+    window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', event => {
+      setMode(event.matches ? "dark" : "light")
+
+  })
+  }
+  })
   const [data, setData] = useState(items)
   const [filteredData, setFilteredData] = useState(data);
 
@@ -58,6 +79,7 @@ export default function Home() {
 
   return (
     <React.Fragment>
+       <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Container maxWidth="xl" sx={{ width: "100vw", height : '100vh'}}>
         <Box className="flex flex-col justify-center content-center h-[100%] ">
@@ -77,6 +99,7 @@ export default function Home() {
           </Box>
         </Box>
       </Container>
+      </ThemeProvider>
     </React.Fragment>
   );
 }

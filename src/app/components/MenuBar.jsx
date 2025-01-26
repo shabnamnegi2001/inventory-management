@@ -28,7 +28,7 @@ function MenuBar(
 
   return (
     <div className='flex flex-column justify-between  w-[100%] '  >
-          <Typography variant="h4" sx={{ color: "black" }}> Inventory Records</Typography>
+          <Typography variant="h4"> Inventory Records</Typography>
           {
             width > 600 ?  
            ( <div className='rounded-md p-3 bg-blue-600 h-[2.4rem] flex justify-center align-center cursor-pointer hover:bg-blue-700'>
