@@ -21,8 +21,13 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import items from '../items';
 import FormDialog from './FormDialog';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemText from '@mui/material/ListItemText';
+import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
+import { itemCategory } from '../items';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -74,11 +79,22 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { 
+    onSelectAllClick, 
+    order, 
+    orderBy, 
+    numSelected, 
+    rowCount, 
+    onRequestSort, 
+    categoryFilter,
+    setCategoryFilter 
+  } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
+
+  const[open, setOpen] = React.useState(false)
 
   return (
     <TableHead>
@@ -91,21 +107,57 @@ function EnhancedTableHead(props) {
             sortDirection={orderBy === headCell.id ? order : false}
           >
             {
-              headCell.numeric ?
+              headCell.id == 'category' && (
+                <>
+                <FilterListIcon className='cursor-pointer' onClick={() => setOpen(prev => !prev)} />
+                <Select
+                labelId="demo-multiple-checkbox-label"
+                id="demo-multiple-checkbox"
+                multiple
+                value={categoryFilter}
+                style = {{
+                  border : 'none',
+                  outline: 'none'
+                }}
+                open={open}
+                onClose={() => setOpen(false)}
+                onChange={(event) =>{
+                    setCategoryFilter([...event.target.value]);
+                }}
+                input={<OutlinedInput className='mx-1' sx = {{ width: '0px', visibility : 'hidden'}} />}
+
+                renderValue={(selected) => ''}
+               
+              >
+                {itemCategory.map((category) => (
+                  <MenuItem key={category} value={category}>
+                    <Checkbox 
+                    checked={categoryFilter?.includes(category)}
+                     />
+                    <ListItemText primary={category} />
+                  </MenuItem>
+                ))}
+              </Select>
+              </>
+              )
+            }
+            {
+              headCell.numeric &&
                 <TableSortLabel
                   active={orderBy === headCell.id}
                   direction={orderBy === headCell.id ? order : 'asc'}
                   onClick={createSortHandler(headCell.id)}
                 >
-                  {headCell.label}
+                   
                   {orderBy === headCell.id ? (
                     <Box component="span" sx={visuallyHidden}>
                       {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                     </Box>
                   ) : null}
                 </TableSortLabel>
-                : headCell.label
             }
+            {headCell.label}
+
           </TableCell>
         ))}
       </TableRow>
@@ -123,7 +175,7 @@ EnhancedTableHead.propTypes = {
 };
 
 export default function ItemListContainer(
-  { filteredData, deleteItem, onAddOrEditItem }
+  { filteredData, deleteItem, onAddOrEditItem, items, setFilteredData }
 ) {
 
   const [order, setOrder] = React.useState('asc');
@@ -132,6 +184,7 @@ export default function ItemListContainer(
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [categoryFilter, setCategoryFilter] = React.useState([]);
 
   const [open, setOpen] = React.useState(false);
 
@@ -190,6 +243,17 @@ export default function ItemListContainer(
   };
 
   
+  React.useEffect(() => {
+    let filteredData = [...items];
+
+    if (categoryFilter.length) {
+      filteredData = filteredData.filter((val) => {
+        return categoryFilter.includes(val.category)
+      })
+    }
+    setFilteredData(filteredData);
+
+  }, [categoryFilter]);
 
   // Avoid a layout jump when reaching the last page with empty filteredData.
   const emptyRows =
@@ -206,9 +270,9 @@ export default function ItemListContainer(
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
+        <TableContainer sx={{ minHeight : 600 }}>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 850}}
             aria-labelledby="tableTitle"
           >
             <EnhancedTableHead
@@ -218,23 +282,26 @@ export default function ItemListContainer(
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={filteredData.length}
+              setCategoryFilter = {setCategoryFilter}
+              categoryFilter={categoryFilter}
             />
             <TableBody>
               {visibleRows.map((item, index) => (
                 <TableRow
                   key={index}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  className= { item.quantity < 10 ? 'bg-yellow-100 hover:bg-yellow-300' : 'hover:bg-gray-100'}
                 >
                   <TableCell  align	='center' component="th" scope="row">
                     {item.name}
                   </TableCell>
                   <TableCell align="center">{item.category}</TableCell>
                   <TableCell align="center">{item.quantity}</TableCell>
-                  <TableCell align="center">{item.price}</TableCell>
+                  <TableCell align="center">{item.price}$</TableCell>
                   <TableCell align="center">
                     <button
-                      className='mr-4 text-blue-700' onClick={() => handleClickOpen(item)} >Edit</button >
-                    <button className='text-red-700' onClick={() => deleteItem(item)}>Delete</button>
+                      className='mr-4 text-blue-600 hover:text-blue-700' onClick={() => handleClickOpen(item)} >Edit</button >
+                    <button className='text-red-600 hover:text-red-700' onClick={() => deleteItem(item)}>Delete</button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -251,6 +318,13 @@ export default function ItemListContainer(
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+       <FormDialog 
+        open={open}
+        handleClose={handleClose}
+        itemData = {itemData}
+        onAddOrEditItem={onAddOrEditItem}
+        type='edit'
+      />
     </Box>
   );
 }

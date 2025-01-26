@@ -77,5 +77,5 @@ const items = [
     'Furniture',
     'Electronics',
     'Stationary',
-    'Grocerry'
+    'Grocery'
   ]

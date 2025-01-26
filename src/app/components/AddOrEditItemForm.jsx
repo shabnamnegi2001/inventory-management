@@ -1,12 +1,6 @@
 import { TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import items, { itemCategory } from "../items";
-import { FormControl } from "@mui/material";
-import { InputLabel } from "@mui/material";
-import { Input } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import {MenuItem} from "@mui/material";
 
 import {Stack} from "@mui/material";
@@ -28,10 +22,9 @@ const AddOrEditItemForm = ({ onAddOrEditItem, itemData}) => {
   }
 
   return (
-    <>
+    <Stack gap={3} padding={2}>
       <TextField
         name="name"
-        defaultValue={itemData?.current?.name}
         value={formData?.name}
         label="Name"
         onChange={handleChange}
@@ -43,7 +36,6 @@ const AddOrEditItemForm = ({ onAddOrEditItem, itemData}) => {
         helperText="Please select the item category"
         variant="outlined"
         name='category'
-        defaultValue={itemData?.current?.category}
         value = {formData?.category}
         onChange={handleChange}
 
@@ -57,22 +49,24 @@ const AddOrEditItemForm = ({ onAddOrEditItem, itemData}) => {
 
       <TextField
         name="quantity"
-        defaultValue={itemData?.current?.quantity}
         value={formData?.quantity}
         label="Quantity"
         onChange={handleChange}
         variant="outlined"
+        type="number"
+
       />
 
       <TextField
         name="price"
-        defaultValue={itemData?.current?.price}
         value={formData?.price}
         onChange={handleChange}
         label="Price"
         variant="outlined"
+        type="number"
+
       />
-    </>
+    </Stack>
     
   );
 };

@@ -5,8 +5,6 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid2';
-import { Typography } from '@mui/material';
 import MenuBar from './components/MenuBar';
 import ItemListContainer from './components/ItemListContainer';
 import { useState } from 'react';
@@ -52,10 +50,6 @@ export default function Home() {
     }
   }
 
-  const onEditItem = (data) => {
-
-
-  }
 
   React.useEffect(() => {
     setFilteredData(data)
@@ -65,15 +59,21 @@ export default function Home() {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="xl" sx={{ width: "100vw", minHeight: "100vh", color: 'white' }}>
-        <Box sx={{ boxSizing: 'border-box', padding: 5, display: 'flex', flexDirection: 'column', gap: 5, }}>
-          <Typography variant="h3" sx={{ color: "text.dark" }}> Inventory Management</Typography>
+      <Container maxWidth="xl" sx={{ width: "100vw", height : '100vh'}}>
+        <Box className="flex flex-col justify-center content-center h-[100%] ">
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <MenuBar data={data} setFilteredData={setFilteredData}
+            <MenuBar 
+              data={data} 
+              setFilteredData={setFilteredData}
               onAddOrEditItem={onAddOrEditItem}
-              onEditItem={onEditItem}
             />
-            <ItemListContainer filteredData={filteredData} deleteItem={deleteItem} onAddOrEditItem={onAddOrEditItem} />
+            <ItemListContainer 
+              items={data}
+              filteredData={filteredData} 
+              deleteItem={deleteItem} 
+              onAddOrEditItem={onAddOrEditItem} 
+              setFilteredData = {setFilteredData}
+            />
           </Box>
         </Box>
       </Container>
